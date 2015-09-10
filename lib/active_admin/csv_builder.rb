@@ -52,9 +52,11 @@ module ActiveAdmin
         receiver << CSV.generate_line(columns.map{ |c| encode c.name, options }, options)
       end
 
-      @collection.find_each do |resource|
-        resource = controller.send :apply_decorator, resource
-        receiver << CSV.generate_line(build_row(resource, columns, options), options)
+      ActiveRecord::Base.uncached do
+        @collection.find_each do |resource|
+          resource = controller.send :apply_decorator, resource
+          receiver << CSV.generate_line(build_row(resource, columns, options), options)
+        end
       end
     end
 

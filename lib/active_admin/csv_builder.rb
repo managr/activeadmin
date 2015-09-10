@@ -52,11 +52,9 @@ module ActiveAdmin
         receiver << CSV.generate_line(columns.map{ |c| encode c.name, options }, options)
       end
 
-      (1..paginated_collection.total_pages).each do |page_no|
-        paginated_collection(page_no).each do |resource|
-           resource = controller.send :apply_decorator, resource
-           receiver << CSV.generate_line(build_row(resource, columns, options), options)
-        end
+      @collection.find_each do |resource|
+        resource = controller.send :apply_decorator, resource
+        receiver << CSV.generate_line(build_row(resource, columns, options), options)
       end
     end
 
@@ -113,14 +111,6 @@ module ActiveAdmin
 
     def column_transitive_options
       @column_transitive_options ||= @options.slice(*COLUMN_TRANSITIVE_OPTIONS)
-    end
-
-    def paginated_collection(page_no = 1)
-      @collection.public_send(Kaminari.config.page_method_name, page_no).per(batch_size)
-    end
-
-    def batch_size
-      1000
     end
   end
 end

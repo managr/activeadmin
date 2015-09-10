@@ -218,8 +218,8 @@ describe ActiveAdmin::CSVBuilder do
     end
 
     it "should generate data with the supplied order" do
-      expect(builder).to receive(:build_row).and_return([]).once.ordered { |post| expect(post.id).to eq @post2.id }
       expect(builder).to receive(:build_row).and_return([]).once.ordered { |post| expect(post.id).to eq @post1.id }
+      expect(builder).to receive(:build_row).and_return([]).once.ordered { |post| expect(post.id).to eq @post2.id }
       builder.build dummy_controller, []
     end
 
